@@ -5,19 +5,17 @@ const fileWrite = (filename, data) => {
       fs.writeFile(filename, data, (err) => {
         if (err) return fail(err);
           return success();
-      });
+        });
     });
   };
 
 fileWrite('domasna1.txt', "Nov fajl so promise!")
-.then(()=>{
+.then(() => {
     console.log('Zapisot e uspesen!')
 })
-.catch(err=>{
+.catch(err => {
     console.log(err);
 })
-
-
 
 const renameFile = (oldFile, newFile) => { 
     return new Promise((success, fail) => {
@@ -28,10 +26,11 @@ const renameFile = (oldFile, newFile) => {
     });
   };
 
-renameFile('domasna1.txt', "DOMASNA!.txt", )
-.then(()=>{
+renameFile('domasna1.txt', 'DOMASNA!.txt')
+.then(() => {
     console.log('Imeto e promeneto!')
 })
-.catch(err=>{
+.catch(err => {
     console.log(err);
 })
+
