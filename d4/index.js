@@ -7,7 +7,12 @@ const handler = (req, res) => {
 
     let karakteri = a.length;
     let parnoIme = karakteri % 2 === 0 ? 'da' : 'ne';
-    let samoglaski = '';
+    let samoglaski = [a, e, i, o, u];
+    for(let s of samoglaski) {
+        if(samoglaski.includes(s)){
+            s++
+        };
+    };
     let soglaski = karakteri - samoglaski;
     res.end(`karakteri: ${karakteri}, parno: ${parnoIme}, samoglaski: ${samoglaski}, soglaski: ${soglaski}`);
     
