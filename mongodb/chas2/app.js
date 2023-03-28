@@ -27,13 +27,13 @@ mongoose
 app.get("/api/v1/blogs", blogController.getAllBlogs);
 app.get("/api/v1/blogs/:id", blogController.getBlog);
 // so ovaa ruta prakjame informacii vo serverot, vo ovoj slucaj kreirame blog
-app.post("/api/vi/blogs", blogController.createBlog);
+app.post("/api/v1/blogs", blogController.createBlog);
 //so patch pravime update na blogot
 app.patch("/api/v1/blogs/:id", blogController.updateBlog);
 // briseme informacii
 app.delete("/api/v1/blogs/:id", blogController.deleteBlog)
 
-const port = 10000;
+const port = 9999;
 app.listen(port, () => {
     console.log(`App running on port ${port}`)
 });
