@@ -38,6 +38,52 @@ exports.getAllBlogs = async (req, res) => {
       });
     }
   };
-exports.getBlog = (req, res) => {};
-exports.updateBlog = (req, res) => {};
-exports.deleteBlog = (req, res) => {};
+exports.getBlog = async (req, res) => {
+    try {
+        const blog = await Blog.find();
+        res.status(200).json({
+          status: "success",
+          data: {
+            blog: blog,
+          },
+        });
+      } catch (err) {
+        res.status(404).json({
+          status: "fail",
+          message: err,
+        });
+      }
+};
+exports.updateBlog = async (req, res) => {
+    try {
+        const blog = await Blog.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true,
+        });
+        const naslov = req.params.naslov;
+       // const blog = await Blog.findByIdAndUpdate({ime: naslov})
+       res.status(200).json({
+        status: 'success',
+        data: {
+            blog,
+        },
+       });
+    } catch (err) {
+        res.status(404).json ({
+            status: 'fail',
+            message: err,
+        });
+    }
+};
+exports.deleteBlog = async (req, res) => {
+    try {
+        await Blog.findByIdAndDelete(req.params.id);
+        res.status(204).json({
+            status: 'success',
+            data: null,
+        });
+    } catch (err) {
+        res.status(404).json({ status: 'fail', message: err})
+    }
+
+};

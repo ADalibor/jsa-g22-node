@@ -1,11 +1,17 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const blogController = require("./controlers/blogController")
+const blogController = require("./controlers/blogController");
+const viewController = require('./controlers/viewController');
 
 const app = express();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+//impportirame ejs engine
+app.set('view engine', 'ejs');
+//za da go koristime public folderot 
+app.use(express.static('public'));
+
 
 
 mongoose
@@ -33,7 +39,16 @@ app.patch("/api/v1/blogs/:id", blogController.updateBlog);
 // briseme informacii
 app.delete("/api/v1/blogs/:id", blogController.deleteBlog)
 
-const port = 9999;
+//definiranje ruti za stranica
+app.get('/blogs', viewController.getBlogView);
+app.post('/blogs', viewController.createBlog);
+app.post('/blogs/delete/:id', viewController.deleteBlog);
+app.post('/blogs/:id', viewController.updateBlog)
+
+//vezba
+//app.get('/blogs/:id', viewController.getSingleBlock);
+
+const port = 10001;
 app.listen(port, () => {
     console.log(`App running on port ${port}`)
 });
