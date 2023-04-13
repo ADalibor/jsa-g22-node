@@ -1,7 +1,8 @@
 const User = require("../pkg/user/userSchema");
 const jwt = require('jsonwebtoken');
 const bcrypt = require("bcryptjs");
-
+const { promisify } = require('util');
+const { rejects } = require("assert");
 exports.signup = async (req, res) => {
   try {
     const newUser = await User.create({
@@ -12,6 +13,12 @@ exports.signup = async (req, res) => {
 
     const token = jwt.sign({id: newUser._id}, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES,
+    });
+
+    res.cookie('jwt', token, {
+      expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES * 24 * 60 * 60 *100),
+      secure: false,
+      httpOnly: true,
     });
 
     res.status(201).json({
@@ -60,4 +67,46 @@ exports.login = async (req, res) => {
   }catch(err){
     return res.status(500).send(err);
   }
+};
+
+exports.protect = async (req, res, next) => {
+  console.log(req.headers);
+  //1.go zemame tokenot i proveruvame dali e tamu
+  let token;
+  if (req.headers.authorization) {
+     token = req.headers.authorization.split(' ')[1];
+  }
+  if (!token) {
+    return res.status(500).send('U are not logged in')
+  }
+
+  //function verifyToken(token) {
+    //return new Promise((resolve, reject) => {
+      //jwt.verify(token, process.env.JWT_SECRET, (err, decodedToken) => {
+        //if(err) {
+          //reject ( new Error('Token verificication failed'));
+        //} else {
+        //  resolve(decodedToken);
+      //  }
+    //  });
+  // });
+  //}
+  //2.go verificirame tokenot
+  //util.promisify; //zema call back bazirana funkcija kako argumnent i ni vrakja nova 
+                  //funkcija sto taa ni vrakja promis
+  //jwt.verify(token, process.env.JWT_SECRET)
+
+  //const verifyAsync = promisify( jwt.verify);
+ // const decoded = await verifyAsync( token, process.env.JWT_SECRET);
+
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+  //3.proveruvame dali postoi korisnikot
+
+  const userTrue = await User.findById(decoded.id);
+  if (!userTrue) {
+    return res.status(400).send('Userot ne postoi');
+  }
+
+  next();
 };
